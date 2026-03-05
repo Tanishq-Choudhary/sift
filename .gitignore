@@ -1,0 +1,10 @@
+target/
+*.class
+.idea/
+*.iml
+.vscode/
+.DS_Store
+__pycache__/
+*.pyc
+*.env
+src/main/resources/pcaps/
