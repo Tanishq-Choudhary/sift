@@ -1,0 +1,57 @@
+{
+  "title": "Sift Pipeline",
+  "uid": "sift-pipeline",
+  "timezone": "browser",
+  "refresh": "5s",
+  "schemaVersion": 39,
+  "panels": [
+    {
+      "id": 1,
+      "title": "Packets Processed / sec",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "targets": [
+        { "expr": "rate(sift_packets_processed_total[1m])", "legendFormat": "processed/s" },
+        { "expr": "rate(sift_packets_dropped_total[1m])", "legendFormat": "dropped/s" }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Processing Latency (p50/p95/p99)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "targets": [
+        { "expr": "histogram_quantile(0.50, sum(rate(sift_packet_processing_latency_seconds_bucket[1m])) by (le))", "legendFormat": "p50" },
+        { "expr": "histogram_quantile(0.95, sum(rate(sift_packet_processing_latency_seconds_bucket[1m])) by (le))", "legendFormat": "p95" },
+        { "expr": "histogram_quantile(0.99, sum(rate(sift_packet_processing_latency_seconds_bucket[1m])) by (le))", "legendFormat": "p99" }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Queue Depth",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 8 },
+      "targets": [
+        { "expr": "sift_queue_depth", "legendFormat": "queue depth" }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Active Flows",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 8 },
+      "targets": [
+        { "expr": "sift_flows_active", "legendFormat": "active flows" }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Alerts Raised / sec",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 8 },
+      "targets": [
+        { "expr": "rate(sift_alerts_raised_total[1m])", "legendFormat": "alerts/s" }
+      ]
+    }
+  ]
+}
