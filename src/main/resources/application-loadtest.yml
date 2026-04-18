@@ -1,0 +1,16 @@
+sift:
+  pcap-file: ""
+  loadgen:
+    profile: MIXED
+    total-packets: 100000
+    rate-per-second: 50000
+    normal-percent: 70
+    syn-flood-percent: 20
+    port-scan-percent: 7
+    dns-tunnel-percent: 3
+    worker-threads: 4
+
+logging:
+  level:
+    com.sift: INFO
+    org.springframework.web: WARN
