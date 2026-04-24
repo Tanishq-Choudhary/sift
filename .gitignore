@@ -8,3 +8,4 @@ __pycache__/
 *.pyc
 *.env
 src/main/resources/pcaps/
+*.jsonl
