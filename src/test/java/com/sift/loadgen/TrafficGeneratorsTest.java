@@ -19,8 +19,6 @@ import org.junit.jupiter.api.Test;
 import java.time.Instant;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TrafficGeneratorsTest {
@@ -67,25 +65,23 @@ class TrafficGeneratorsTest {
         SynFloodTrafficGenerator gen = new SynFloodTrafficGenerator();
         SynFloodDetector detector = new SynFloodDetector(flowTrackingService, 3.0);
 
-        Instant now = Instant.now();
+        Instant start = Instant.now();
 
-        // Send seed packets
-        Packet p1 = gen.generatePacket(now);
-        flowTrackingService.track(p1);
-        detector.check(p1);
+        for (int i = 0; i < 100; i++) {
+            Packet p = gen.generatePacket(start.minusSeconds(1550 - i * 15));
+            flowTrackingService.track(p);
+            detector.check(p);
+        }
 
-        Packet p2 = gen.generatePacket(now);
-        flowTrackingService.track(p2);
-        detector.check(p2);
-
-        // Flood traffic
         Optional<Alert> alert = Optional.empty();
-        for (int i = 0; i < 1000; i++) {
-            Packet packet = gen.generatePacket(now);
+        for (int i = 0; i < 20; i++) {
+            Packet packet = gen.generatePacket(start);
             flowTrackingService.track(packet);
-            var result = detector.check(packet);
+            Optional<Alert> result = detector.check(packet);
+
             if (result.isPresent()) {
                 alert = result;
+                break;
             }
         }
 

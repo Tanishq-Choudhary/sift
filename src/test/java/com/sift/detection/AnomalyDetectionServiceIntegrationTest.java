@@ -28,13 +28,26 @@ class AnomalyDetectionServiceIntegrationTest {
 
     @BeforeEach
     void setUp() throws Exception {
+        ConnectionFactory connectionFactory = new ConnectionFactory();
+        connectionFactory.setHost("localhost");
+        connectionFactory.setPort(5672);
+
+        try (Connection connection = connectionFactory.newConnection();
+             Channel channel = connection.createChannel()) {
+            channel.queueDeclare(QUEUE_NAME, true, false, false, null);
+            channel.queuePurge(QUEUE_NAME);
+        } catch (Exception ignored) {
+        }
+
         alertPublisher = new AlertPublisher("localhost", 5672);
         alertRingBuffer = new AlertRingBuffer(500);
     }
 
     @AfterEach
     void tearDown() throws Exception {
-        alertPublisher.close();
+        if (alertPublisher != null) {
+            alertPublisher.close();
+        }
     }
 
     @Test
