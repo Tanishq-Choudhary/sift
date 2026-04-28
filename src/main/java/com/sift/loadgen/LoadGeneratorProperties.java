@@ -20,8 +20,8 @@ public class LoadGeneratorProperties {
         if (totalPackets <= 0) {
             throw new IllegalArgumentException("total-packets must be positive");
         }
-        if (ratePerSecond <= 0) {
-            throw new IllegalArgumentException("rate-per-second must be positive");
+        if (ratePerSecond < 0) {
+            throw new IllegalArgumentException("rate-per-second cannot be negative (use 0 for max speed)");
         }
         if (workerThreads <= 0) {
             throw new IllegalArgumentException("worker-threads must be positive");

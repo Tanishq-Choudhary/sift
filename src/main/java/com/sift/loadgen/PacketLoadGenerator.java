@@ -32,6 +32,7 @@ import java.util.concurrent.locks.LockSupport;
 public class PacketLoadGenerator implements CommandLineRunner {
 
     private static final Logger log = LoggerFactory.getLogger(PacketLoadGenerator.class);
+    private static final int BATCH_SIZE = 128;
 
     private final PacketPipeline pipeline;
     private final LoadGeneratorProperties properties;
@@ -43,8 +44,8 @@ public class PacketLoadGenerator implements CommandLineRunner {
     private volatile double currentThroughput = 0.0;
 
     public PacketLoadGenerator(PacketPipeline pipeline,
-                               LoadGeneratorProperties properties,
-                               MeterRegistry meterRegistry) {
+                                LoadGeneratorProperties properties,
+                                MeterRegistry meterRegistry) {
         this.pipeline = pipeline;
         this.properties = properties;
         this.meterRegistry = meterRegistry;
@@ -96,7 +97,7 @@ public class PacketLoadGenerator implements CommandLineRunner {
 
         long packetsPerWorker = totalPackets / workerThreads;
         long remainder = totalPackets % workerThreads;
-        int workerTargetRate = Math.max(1, targetRate / workerThreads);
+        int workerTargetRate = targetRate > 0 ? Math.max(1, targetRate / workerThreads) : 0;
 
         Instant startTime = Instant.now();
 
@@ -125,7 +126,7 @@ public class PacketLoadGenerator implements CommandLineRunner {
     }
 
     private void generateWorkerLoop(long countToSubmit, int ratePerSecond) {
-        long intervalNanos = ratePerSecond > 0 ? 1_000_000_000L / ratePerSecond : 0;
+        long batchIntervalNanos = ratePerSecond > 0 ? (1_000_000_000L * BATCH_SIZE) / ratePerSecond : 0;
         long nextSendNanos = System.nanoTime();
 
         for (long i = 0; i < countToSubmit; i++) {
@@ -138,8 +139,8 @@ public class PacketLoadGenerator implements CommandLineRunner {
                 rejectedCount.incrementAndGet();
             }
 
-            if (intervalNanos > 0) {
-                nextSendNanos += intervalNanos;
+            if (batchIntervalNanos > 0 && (i % BATCH_SIZE == 0)) {
+                nextSendNanos += batchIntervalNanos;
                 long waitNanos = nextSendNanos - System.nanoTime();
                 if (waitNanos > 0) {
                     LockSupport.parkNanos(waitNanos);
@@ -163,7 +164,7 @@ public class PacketLoadGenerator implements CommandLineRunner {
 
     private void logSummary(long totalSubmitted, long elapsedMs, double throughput) {
         log.info("""
-                
+
                 ==================================================
                 LOAD GENERATION SUMMARY
                 ==================================================
@@ -174,17 +175,17 @@ public class PacketLoadGenerator implements CommandLineRunner {
                 Dropped:      {}
                 Alerts:       {}
                 Elapsed:      {} ms
-                Throughput:   %.2f pkt/s
+                Throughput:   {} pkt/s
                 ==================================================
                 """,
                 properties.getProfile(),
                 properties.getRatePerSecond(),
                 totalSubmitted,
                 pipeline.getPacketsProcessed(),
-                pipeline.getPacketsDropped() + rejectedCount.get(),
+                pipeline.getPacketsDropped(),
                 pipeline.getAlertsRaised(),
                 elapsedMs,
-                throughput);
+                "%.2f".formatted(throughput));
     }
 
     public long getSubmittedCount() { return submittedCount.get(); }
