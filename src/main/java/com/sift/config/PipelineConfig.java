@@ -1,6 +1,7 @@
 package com.sift.config;
 
 import com.sift.alerting.AlertPublisher;
+import com.sift.alerting.AsyncAlertDispatcher;
 import com.sift.capture.PcapFileReader;
 import com.sift.detection.AlertJsonLineLogger;
 import com.sift.detection.AlertRingBuffer;
@@ -77,15 +78,26 @@ public class PipelineConfig {
         return new AlertJsonLineLogger(Path.of(properties.getAlertLogFile()));
     }
 
+    @Bean(destroyMethod = "close")
+    public AsyncAlertDispatcher asyncAlertDispatcher(AlertPublisher alertPublisher,
+                                                     AlertJsonLineLogger alertJsonLineLogger,
+                                                     MeterRegistry meterRegistry) {
+        AsyncAlertDispatcher dispatcher = new AsyncAlertDispatcher(alertPublisher, alertJsonLineLogger);
+        Gauge.builder("sift.alerts.dispatch.queue.depth", dispatcher, AsyncAlertDispatcher::getQueueDepth)
+                .register(meterRegistry);
+        Gauge.builder("sift.alerts.dispatch.dropped", dispatcher, AsyncAlertDispatcher::getAlertsDropped)
+                .register(meterRegistry);
+        return dispatcher;
+    }
+
     @Bean
     public AnomalyDetectionService anomalyDetectionService(SynFloodDetector synFloodDetector,
                                                              PortScanDetector portScanDetector,
                                                              DnsTunnelingDetector dnsTunnelingDetector,
                                                              AlertRingBuffer alertRingBuffer,
-                                                             AlertPublisher alertPublisher,
-                                                             AlertJsonLineLogger alertJsonLineLogger) {
+                                                             AsyncAlertDispatcher asyncAlertDispatcher) {
         return new AnomalyDetectionService(synFloodDetector, portScanDetector, dnsTunnelingDetector,
-                alertRingBuffer, alertPublisher, alertJsonLineLogger);
+                alertRingBuffer, asyncAlertDispatcher);
     }
 
     @Bean(destroyMethod = "shutdown")

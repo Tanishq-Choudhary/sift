@@ -15,20 +15,20 @@ public class AlertRingBuffer {
         this.capacity = capacity;
     }
 
-    public void add(Alert alert) {
+    public synchronized void add(Alert alert) {
         if (alerts.size() == capacity) {
             alerts.removeFirst();
         }
         alerts.addLast(alert);
     }
 
-    public List<Alert> recent(int limit) {
+    public synchronized List<Alert> recent(int limit) {
         return alerts.stream()
                 .skip(Math.max(0, alerts.size() - limit))
                 .toList();
     }
 
-    public int size() {
+    public synchronized int size() {
         return alerts.size();
     }
 }

@@ -137,8 +137,9 @@ public class PacketPipeline {
             List<Alert> firedAlerts;
             synchronized (detectionLock) {
                 flowTrackingService.track(packet);
-                firedAlerts = anomalyDetectionService.evaluate(packet);
+                firedAlerts = anomalyDetectionService.detect(packet);
             }
+            anomalyDetectionService.raise(firedAlerts);
             alertsRaised.addAndGet(firedAlerts.size());
             packetsProcessed.incrementAndGet();
         } finally {
