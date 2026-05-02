@@ -1,0 +1,16 @@
+label: final
+jar: sift-after2.jar (lock fix + counter fix)
+cores: 16
+cpu seconds: 24 over 19.6 s wall
+avg cpu (all cores): 7.6 %
+per-second processed rates: 53632, 50688, 50688, 50176, 51072, 46196, 50698, 50678, 50304, 51072, 50688, 50176, 47360, 50432, 50616, 50632, 50688, 50176, 27708
+--- app summary ---
+15:55:52.244 INFO  c.sift.loadgen.PacketLoadGenerator - Starting Sift Load Generator. Profile: MIXED, Total: 1000000, Target Rate: 50000 pkt/s, Workers: 4
+Load profile: MIXED
+Target rate:  50000 pkt/s
+Submitted:    1000000
+Processed:    1000000
+Dropped:      0
+Alerts:       29920
+Elapsed:      20121 ms
+Throughput:   49699.32 pkt/s

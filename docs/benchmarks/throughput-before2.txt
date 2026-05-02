@@ -1,0 +1,16 @@
+label: before2
+jar: sift-before.jar (GitHub HEAD 7966b97)
+cores: 16
+cpu seconds: 72.6 over 50.1 s wall
+avg cpu (all cores): 9.1 %
+per-second processed rates: 30379, 28719, 25117, 24680, 24270, 17186, 18098, 17637, 19217, 18400, 18981, 17820, 17047, 18245, 21258, 18044, 19737, 19104, 18267, 20217, 20493, 20643, 20037, 20408, 20149, 18748, 18095, 18938, 19791, 19864, 20175, 20027, 20277, 20470, 17520, 18678, 20924, 20112, 19367, 20378, 20447, 18167, 17349, 19850, 18094, 19606, 18989, 20140, 5400
+--- app summary ---
+15:54:54.924 INFO  c.sift.loadgen.PacketLoadGenerator - Starting Sift Load Generator. Profile: MIXED, Total: 1000000, Target Rate: 50000 pkt/s, Workers: 4
+Load profile: MIXED
+Target rate:  50000 pkt/s
+Submitted:    1000000
+Processed:    1000000
+Dropped:      0
+Alerts:       30027
+Elapsed:      50283 ms
+Throughput:   19887.44 pkt/s

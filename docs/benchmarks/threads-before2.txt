@@ -1,0 +1,7 @@
+label: before2
+worker-thread samples: 160 (40 dumps x 4 workers)
+ 72.5%  BLOCKED / waiting for detectionLock
+ 17.5%  RUNNABLE / running: parse/track/detect
+  7.5%  RUNNABLE / running: alert I/O
+  1.9%  BLOCKED / running: parse/track/detect
+  0.6%  WAITING / waiting for a packet
