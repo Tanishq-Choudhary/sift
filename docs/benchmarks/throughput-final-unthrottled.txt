@@ -1,8 +1,8 @@
 label: final-unthrottled
 jar: sift-after2.jar (lock fix + counter fix)
-cores: 16
+logical processors: 16 (i7-13620H, 10 cores)
 cpu seconds: 44.5 over 9.3 s wall
-avg cpu (all cores): 29.9 %
+avg cpu (share of all 16 logical processors): 29.9 %
 per-second processed rates: 227229, 349559, 430010, 424594, 411815, 478189, 464195, 39106
 --- app summary ---
 15:57:08.745 INFO  c.sift.loadgen.PacketLoadGenerator - Starting Sift Load Generator. Profile: MIXED, Total: 3000000, Target Rate: 0 pkt/s, Workers: 4

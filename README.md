@@ -13,12 +13,12 @@ Full writeup with a demo that runs the real detection rule on any domain you typ
 | Throughput, no rate limit | 343,525 packets a second over 3,000,000 packets |
 | Same test before the two lock fixes | 19,331 packets a second |
 | Packets dropped | 0, in every run |
-| CPU at a 50,000 packets/s target | 7.6% of 16 cores |
+| CPU at a 50,000 packets/s target | 7.6% of the whole CPU |
 | Worker time blocked on the lock, at a 50,000 target | 72.5% before, 11.3% after |
 
 ![Packets per second: 19,331 before, 24,353 with the first fix, 343,525 with both](docs/sift-throughput.svg)
 
-Measured on a 16-core laptop with the `loadtest` profile. The raw output of every run is in [docs/benchmarks](docs/benchmarks).
+Measured on my laptop (Intel i7-13620H, 10 cores, 16 threads) with the `loadtest` profile. CPU percentages are of all 16 threads. The raw output of every run is in [docs/benchmarks](docs/benchmarks).
 
 ## Why it is built this way
 
